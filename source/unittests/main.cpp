@@ -44,6 +44,7 @@
 #include "maptest.h"
 #include "repairtest.h"
 #include "imageloadingtest.h"
+#include "undoresourcetest.h"
 
 
 void viewcomp( Player& player )
@@ -95,6 +96,7 @@ void runUnitTests()
    testAiService();
    testAiMovement();
    testUnitRepair();
+   testUndoVehicleEnergy();
 }     
       
 

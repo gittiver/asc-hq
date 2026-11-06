@@ -101,6 +101,10 @@ class GameAction {
       void write ( tnstream& stream, bool persistChildren ) const;
    
       virtual ASCString getDescription() const = 0;
+
+      int getChildCount() const { return (int) children.size(); }
+      GameAction* getChild( int index ) { return children[index]; }
+      const GameAction* getChild( int index ) const { return children[index]; }
       
       virtual ~GameAction() {};
       

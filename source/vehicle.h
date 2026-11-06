@@ -213,6 +213,10 @@ class UnitHooveringLogic {
     //! returns the resources that the unit is carrying
     Resources getTank() const;
 
+    /** Add delta to the tank directly. Used to reverse a transfer that
+        putResource cannot express (energy, which putResource refuses). */
+    void addTankResource( int resourcetype, int delta );
+
     //@}
     
     //! returns the bitmapped level of height. Only one bit will be set, of course

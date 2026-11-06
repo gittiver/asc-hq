@@ -24,20 +24,29 @@
 
 
 #include "containeraction.h"
+#include "resourcedrawrecord.h"
 
 #include "../typen.h"
 
 class ConsumeResource : public ContainerAction {
       Resources toGet;
       Resources got;
+      ResourceDrawLog* drawLog;
+      bool drawLogValid;
       
-      ConsumeResource( GameMap* map ) : ContainerAction( map ) {};
+      ConsumeResource( GameMap* map ) : ContainerAction( map ), drawLog( NULL ), drawLogValid( false ) {};
       template<class Child> friend GameAction* GameActionCreator( GameMap* map);
+      friend void archiveResourceDrawLogs( GameMap* map );
+      friend void restoreResourceDrawLogs( GameMap* map );
       
    public:
       ConsumeResource( ContainerBase* container, const Resources& toGet );
+      ~ConsumeResource();
       
       ASCString getDescription() const;
+
+      //! Drop the in-memory source list. The action stream is unchanged.
+      void discardDrawLog();
       
    protected:
       virtual GameActionID getID() const;
@@ -50,6 +59,10 @@ class ConsumeResource : public ContainerAction {
       virtual void writeData ( tnstream& stream ) const;
       
 };
+
+class GameMap;
+void archiveResourceDrawLogs( GameMap* map );
+void restoreResourceDrawLogs( GameMap* map );
 
 #endif
 

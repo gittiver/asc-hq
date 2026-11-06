@@ -373,6 +373,16 @@ void Properties::setValue( const ASCString& key, const ASCString& value )
 {
    data[key] = value;
 }
+
+bool Properties::contains( const ASCString& key ) const
+{
+   return data.find( key ) != data.end();
+}
+
+void Properties::remove( const ASCString& key )
+{
+   data.erase( key );
+}
       
 void Properties::write( tnstream& stream ) const
 {

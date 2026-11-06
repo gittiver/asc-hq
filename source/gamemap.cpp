@@ -40,6 +40,7 @@
 
 #include "packagemanager.h"
 #include "tasks/abstracttaskcontainer.h"
+#include "actions/consumeresource.h"
 
 RandomGenerator::RandomGenerator(int seedValue){
 
@@ -697,8 +698,10 @@ void GameMap :: read ( tnstream& stream )
           actionRecorder = NULL;
     }
     
-    if( version >= 31 )
+    if( version >= 31 ) {
        properties.read( stream );
+       restoreResourceDrawLogs( this );
+    }
     
     if ( version >= 33 ) 
        tasks->read( stream );
@@ -911,6 +914,7 @@ void GameMap :: write ( tnstream& stream )
     } else
        stream.writeInt( 0 );
     
+    archiveResourceDrawLogs( this );
     properties.write( stream );
     
    tasks->write( stream );

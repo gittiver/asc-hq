@@ -28,6 +28,7 @@
 #include "dlg_box.h"
 #include "dialog.h"
 #include "cannedmessages.h"
+#include "actions/resourcedrawrecord.h"
 
 sigc::signal<void> tributeTransferred;
 
@@ -340,8 +341,10 @@ void GetResource :: checkbuilding ( Building* b )
          if ( b->actstorage.resource( resourcetype ) < toget )
             toget = b->actstorage.resource( resourcetype );
 
-         if ( !queryonly )
+         if ( !queryonly ) {
             b->actstorage.resource( resourcetype ) -= toget;
+            recordResourceDelta( ResourceDrawBuilding, b->getIdentification(), 0, resourcetype, -toget );
+         }
          got += toget;
       }
    } else
@@ -360,14 +363,18 @@ void GetResource :: checkbuilding ( Building* b )
             if ( toget < found )
                found = toget;
 
-            if ( !queryonly )
+            if ( !queryonly ) {
                b->actstorage.resource(resourcetype) -= found;
+               recordResourceDelta( ResourceDrawBuilding, b->getIdentification(), 0, resourcetype, -found );
+            }
 
             tributegot[ resourcetype ][ b->color / 8] += found;
 
             if ( !queryonly ) {
                actmap->tribute.avail[ b->color / 8 ][ player ].resource( resourcetype ) -= found;
+               recordResourceDelta( ResourceDrawTributeAvail, b->color / 8, player, resourcetype, -found );
                actmap->tribute.paid [ player ][ b->color / 8 ].resource( resourcetype ) += found;
+               recordResourceDelta( ResourceDrawTributePaid, player, b->color / 8, resourcetype, found );
                if ( found )
                   tributeTransferred();
             }
@@ -384,8 +391,10 @@ void GetResource :: start ( int x, int y )
       if ( got > actmap->bi_resource[player].resource( resourcetype ) )
          got = actmap->bi_resource[player].resource( resourcetype );
 
-      if ( !queryonly )
+      if ( !queryonly ) {
          actmap->bi_resource[player].resource( resourcetype ) -= got;
+         recordResourceDelta( ResourceDrawGlobal, player, 0, resourcetype, -got );
+      }
 
       if ( resourcetype == 0 )
          searchAllVehiclesNextToBuildings ( player );
@@ -415,8 +424,10 @@ void PutResource :: checkbuilding ( Building* b )
          if ( b->getStorageCapacity().resource( resourcetype ) - b->actstorage.resource( resourcetype ) < tostore )
             tostore = b->getStorageCapacity().resource( resourcetype ) - b->actstorage.resource( resourcetype );
       
-         if ( !queryonly )
+         if ( !queryonly ) {
             b->actstorage.resource( resourcetype ) += tostore;
+            recordResourceDelta( ResourceDrawBuilding, b->getIdentification(), 0, resourcetype, tostore );
+         }
          got += tostore;
       }
    }
@@ -431,8 +442,10 @@ void PutResource :: start ( int x, int y )
       if ( got > maxint - actmap->bi_resource[player].resource( resourcetype ) )
          got = maxint - actmap->bi_resource[player].resource( resourcetype );
 
-      if ( !queryonly )
+      if ( !queryonly ) {
          actmap->bi_resource[player].resource( resourcetype ) += got;
+         recordResourceDelta( ResourceDrawGlobal, player, 0, resourcetype, got );
+      }
 
    } else
       MapNetwork :: start ( x, y );

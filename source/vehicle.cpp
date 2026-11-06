@@ -35,6 +35,7 @@
 #include "actions/changeunitproperty.h"
 #include "actions/spawnobject.h"
 #include "actions/unitfieldregistration.h"
+#include "actions/resourcedrawrecord.h"
 
 const float repairEfficiencyVehicle[resourceTypeNum*resourceTypeNum] = { 0,  0,  0,
                                                                          0,  0.5, 0,
@@ -221,8 +222,7 @@ int Vehicle :: putResource ( int amount, int resourcetype, bool queryonly, int s
       int tostore = min ( spaceAvail, amount);
       if ( !queryonly ) {
          tank.resource(resourcetype) += tostore;
-         // if ( tostore > 0 )
-         //   resourceChanged();
+         recordResourceDelta( ResourceDrawTank, getIdentification(), 0, resourcetype, tostore );
       }
 
       return tostore;
@@ -249,12 +249,16 @@ int Vehicle :: getResource ( int amount, int resourcetype, bool queryonly, int s
       int toget = min ( tank.resource(resourcetype), amount);
       if ( !queryonly ) {
          tank.resource(resourcetype) -= toget;
-         // if ( toget > 0 )
-         //   resourceChanged();
+         recordResourceDelta( ResourceDrawTank, getIdentification(), 0, resourcetype, -toget );
       }
 
       return toget;
    }
+}
+
+void Vehicle :: addTankResource( int resourcetype, int delta )
+{
+   tank.resource( resourcetype ) += delta;
 }
 
 int Vehicle :: getAvailableResource ( int amount, int resourcetype, int scope ) const

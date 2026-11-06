@@ -275,6 +275,8 @@ class Properties {
    public:
       ASCString getValue( const ASCString& key );
       void setValue( const ASCString& key, const ASCString& value );
+      bool contains( const ASCString& key ) const;
+      void remove( const ASCString& key );
       
       void write( tnstream& stream ) const;
       void read( tnstream& stream );
